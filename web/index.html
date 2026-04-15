@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta property="og:title" content="Bitácora Nutricional">
+  <meta property="og:description" content="Sistema de seguimiento nutricional para pacientes">
+  <meta property="og:url" content="https://bitacora-nutricional.web.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://bitacora-nutricional.web.app/icons/icono-512.png">
+  
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
@@ -24,14 +30,15 @@
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="app_pvvc">
+  <meta name="apple-mobile-web-app-title" content="Sistema de bitácora nutricional para seguimiento de pacientes y control alimenticio">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="icono-16.png"/>
 
-  <title>app_pvvc</title>
+  <title>Bitácora Nutricional</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -43,6 +50,17 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
-  <script src="flutter_bootstrap.js" async></script>
+<script src="flutter_bootstrap.js" async></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/flutter_service_worker.js')
+        .then(reg => console.log('SW registrado:', reg.scope))
+        .catch(err => console.warn('SW error:', err));
+    });
+  }
+</script>
+
 </body>
 </html>
