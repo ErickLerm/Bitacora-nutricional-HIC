@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../utils/styles.dart'; 
-import '../theme/app_colors.dart'; 
-import '../widgets/generar_pdf.dart'; 
+import 'package:app_pvvc/utils/styles.dart';
+import 'package:app_pvvc/theme/app_colors.dart';
+import 'package:app_pvvc/servicios/generar_pdf.dart';
 
 class ReporteScreen extends StatefulWidget {
   const ReporteScreen({super.key});
@@ -58,17 +58,13 @@ class _ReporteScreenState extends State<ReporteScreen> {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 550, // 👈 límite tablet/web
-          ),
+          constraints: const BoxConstraints(maxWidth: 550),
 
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
 
             child: Column(
               children: [
-
-                // 🔹 CARD
                 Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
@@ -81,12 +77,14 @@ class _ReporteScreenState extends State<ReporteScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.article,
-                                color: AppColors.titulo2, size: 20),
+                            Icon(
+                              Icons.article,
+                              color: AppColors.titulo2,
+                              size: 20,
+                            ),
                             SizedBox(width: 8),
                             Text(
                               "Generar Reporte",
@@ -138,8 +136,7 @@ class _ReporteScreenState extends State<ReporteScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
 
                             onPressed: () async {
@@ -149,11 +146,36 @@ class _ReporteScreenState extends State<ReporteScreen> {
                                 ),
                               );
 
-                              await generarPDF();
+                              if (fechaInicio == null || fechaFin == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Selecciona fecha inicio y fecha fin',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (fechaFin!.isBefore(fechaInicio!)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'La fecha fin no puede ser antes de la fecha inicio',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              await compartirPDF(
+                                fechaInicio: fechaInicio!,
+                                fechaFin: fechaFin!,
+                              );
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('PDF listo'),
+                                  content: Text('PDF listo para compartir'),
                                 ),
                               );
                             },
@@ -164,7 +186,59 @@ class _ReporteScreenState extends State<ReporteScreen> {
                                 Icon(Icons.picture_as_pdf, size: 20),
                                 SizedBox(width: 8),
                                 Text(
-                                  'Generar reporte',
+                                  'Compartir reporte',
+                                  style: AppTextStyles.boton,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed: () async {
+                              if (fechaInicio == null || fechaFin == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Selecciona fecha inicio y fecha fin',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (fechaFin!.isBefore(fechaInicio!)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'La fecha fin no puede ser antes de la fecha inicio',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              await imprimirPDF(
+                                fechaInicio: fechaInicio!,
+                                fechaFin: fechaFin!,
+                              );
+                            },
+
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.print, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Imprimir/Guardar PDF',
                                   style: AppTextStyles.boton,
                                 ),
                               ],
@@ -178,7 +252,6 @@ class _ReporteScreenState extends State<ReporteScreen> {
 
                 const SizedBox(height: 20),
 
-                // 🔹 IMAGEN
                 Image.asset(
                   'assets/hic/mascota.png',
                   width: double.infinity,

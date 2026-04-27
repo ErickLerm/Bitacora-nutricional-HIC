@@ -6,10 +6,9 @@ import 'screens/start_screen.dart'; // 👈 nueva pantalla
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Hive.initFlutter(); // 🔹 Inicializa Hive
   await Hive.openBox('settings'); // 🔹 Abre la caja
-
+  await Hive.openBox('meal_reports');
   runApp(const MyApp());
 }
 

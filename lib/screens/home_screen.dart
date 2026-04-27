@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                 // BOTÓN - Centrado
                 Center(
                   child: ElevatedButton.icon(
-                    onPressed: () => onTabChange(1),
+                    onPressed: () => onTabChange(2),
                     icon: const Icon(Icons.dining, color: Colors.white),
                     label: const Text(
                       "Crear Plato",

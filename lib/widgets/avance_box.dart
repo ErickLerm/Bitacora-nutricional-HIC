@@ -1,103 +1,210 @@
 import 'package:flutter/material.dart';
-import '../utils/styles.dart'; 
-import '../theme/app_colors.dart'; 
+import 'package:hive_flutter/hive_flutter.dart';
+import '../utils/styles.dart';
+import '../theme/app_colors.dart';
 
-class ProgresoDia extends StatefulWidget {
+class ProgresoDia extends StatelessWidget {
   const ProgresoDia({super.key});
 
-  @override
-  _ProgresoDiaState createState() => _ProgresoDiaState();
-}
+  static const List<String> comidas = ['Desayuno', 'Comida', 'Cena'];
 
-class _ProgresoDiaState extends State<ProgresoDia> {
-  // Estado de cada comida: false = no completada, true = completada
-  List<bool> _completado = [false, false, false];
+  String _fechaClave(DateTime fecha) {
+    final year = fecha.year.toString();
+    final month = fecha.month.toString().padLeft(2, '0');
+    final day = fecha.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  EstadoComida _estadoComida(Box box, String comida) {
+    final hoy = DateTime.now();
+    final clave = '${_fechaClave(hoy)}|$comida';
+
+    final datos = box.get(clave);
+
+    if (datos == null || datos is! List || datos.isEmpty) {
+      return EstadoComida.sinCompletar;
+    }
+
+    if (datos.length >= 11) {
+      return EstadoComida.completo;
+    }
+
+    return EstadoComida.enProgreso;
+  }
+
+  Color _colorEstado(EstadoComida estado) {
+    switch (estado) {
+      case EstadoComida.completo:
+        return Colors.green;
+      case EstadoComida.enProgreso:
+        return Colors.amber;
+      case EstadoComida.sinCompletar:
+        return Colors.grey.shade300;
+    }
+  }
+
+  IconData _iconoEstado(EstadoComida estado) {
+    switch (estado) {
+      case EstadoComida.completo:
+        return Icons.check_circle;
+      case EstadoComida.enProgreso:
+        return Icons.radio_button_checked;
+      case EstadoComida.sinCompletar:
+        return Icons.circle_outlined;
+    }
+  }
+
+  String _textoEstado(EstadoComida estado) {
+    switch (estado) {
+      case EstadoComida.completo:
+        return 'Completo';
+      case EstadoComida.enProgreso:
+        return 'Progreso';
+      case EstadoComida.sinCompletar:
+        return 'Sin completar';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final comidas = ["Desayuno", "Comida", "Cena"];
-    final iconos = [Icons.free_breakfast, Icons.lunch_dining, Icons.dinner_dining];
+    final iconosComida = [
+      Icons.free_breakfast,
+      Icons.lunch_dining,
+      Icons.dinner_dining,
+    ];
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
+    return ValueListenableBuilder(
+      valueListenable: Hive.box('meal_reports').listenable(),
+      builder: (context, Box box, _) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center, // centra horizontalmente
-        children: [
-          const Icon(Icons.bar_chart, color: AppColors.titulo2, size: 24), // ícono a la izquierda
-          const SizedBox(width: 8), // espacio entre ícono y texto
-          Text(
-            "Progreso del Día",
-            style: AppTextStyles.titulo2,
-          ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.bar_chart,
+                    color: AppColors.titulo2,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Progreso del Día',
+                    style: AppTextStyles.titulo2,
+                  ),
+                ],
+              ),
 
-            // Línea horizontal
-      Divider(
-        color: AppColors.titulo2,
-        thickness: 1,
-        indent: 5,
-        endIndent: 5,
-      ),
+              const Divider(
+                color: AppColors.titulo2,
+                thickness: 1,
+                indent: 5,
+                endIndent: 5,
+              ),
 
+              const SizedBox(height: 16),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(comidas.length, (index) {
+                  final comida = comidas[index];
+                  final estado = _estadoComida(box, comida);
+                  final color = _colorEstado(estado);
 
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(3, (index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _completado[index] = !_completado[index]; // marcar/desmarcar
-                  });
-                },
-                child: Column(
-                  children: [
-                    // Indicador circular con icono
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: _completado[index] ? Colors.green : Colors.grey.shade300,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                iconosComida[index],
+                                color: estado == EstadoComida.sinCompletar
+                                    ? Colors.black54
+                                    : Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                _iconoEstado(estado),
+                                color: color,
+                                size: 22,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Text(
+                          comida,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
                           ),
-                        ],
-                      ),
-                      child: Icon(
-                        iconos[index],
-                        color: _completado[index] ? Colors.white : Colors.black54,
-                        size: 30,
-                      ),
+                        ),
+
+                        const SizedBox(height: 3),
+
+                        Text(
+                          _textoEstado(estado),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: estado == EstadoComida.sinCompletar
+                                ? Colors.grey.shade600
+                                : color,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(comidas[index], style: TextStyle(fontWeight: FontWeight.w500))
-                  ],
-                ),
-              );
-            }),
+                  );
+                }),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+}
+
+enum EstadoComida {
+  sinCompletar,
+  enProgreso,
+  completo,
 }
