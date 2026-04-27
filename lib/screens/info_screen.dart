@@ -23,10 +23,10 @@ final List<Map<String, dynamic>> secciones = [
     El Plato del Bien Comer actual se divide en cuatro grupos principales:
 
     🍅 Frutas y Verduras.
-    🥑 Granos y cereales: 
+    🍞 Granos y cereales: 
     🫘 Leguminosas: 
     🥩 Origen animal: 
-    e) Aceites y grasas saludables.
+    🥑 Aceites y grasas saludables.
 
     El Plato del Bien Comer es de suma importancia porque nos permite llevar una dieta equilibrada y variada, lo que es esencial para mantener una buena salud. 
     """
@@ -114,7 +114,7 @@ final List<Map<String, dynamic>> secciones = [
     "imagen": "assets/info/plato-aceite.png",
     "colorFondo": AppColors.g5,
     "textoLargo": """
-      Incluye aceites de maíz, cártamo, canola, soya entre otros, y alimentos como el aguacate, ajonjolí, almendra, avellana, cacahuate, nuez, entre otros.
+      Incluye aceites de maíz, cártamo, canola, entre otros, y alimentos como el aguacate, ajonjolí, almendra, avellana, cacahuate, nuez, entre otros.
 
       🥛 Su principal nutrimento son los lípidos (grasas) que brindan energía, protegen a las células con una pared de lípidos y ayudan al transporte de vitaminas para el buen funcionamiento del organismo.
 
