@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/styles.dart';
 import '../theme/app_colors.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../screens/acerca_de_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -209,6 +210,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
+
+const SizedBox(height: 16),
+
+// 🔹 ACERCA DE
+Card(
+  elevation: 5,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15),
+  ),
+  child: ListTile(
+    leading: const Icon(Icons.info_outline, color: AppColors.titulo2),
+    title: const Text('Acerca de', style: AppTextStyles.titulo3),
+    trailing: const Icon(Icons.chevron_right, color: AppColors.titulo2),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AcercaDeScreen()),
+      );
+    },
+  ),
+),
+
+
+
 
               ],
             ),
