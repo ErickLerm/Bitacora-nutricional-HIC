@@ -33,7 +33,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Sistema de bitácora nutricional para seguimiento de pacientes y control alimenticio">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icono-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="icono-16.png"/>
@@ -54,10 +54,29 @@
 
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/flutter_service_worker.js')
-        .then(reg => console.log('SW registrado:', reg.scope))
-        .catch(err => console.warn('SW error:', err));
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((reg) => {
+          console.log('Service Worker registrado correctamente');
+
+          // Forzar búsqueda de actualizaciones cada vez que se carga la página
+          reg.update();
+
+          reg.onupdatefound = () => {
+            const newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.onstatechange = () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('Nueva versión disponible. Recargando aplicación...');
+                  window.location.reload();
+                }
+              };
+            }
+          };
+        })
+        .catch((error) => {
+          console.error('Error al registrar Service Worker:', error);
+        });
     });
   }
 </script>

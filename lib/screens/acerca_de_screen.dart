@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../utils/styles.dart';
 import '../theme/app_colors.dart';
 
-class AcercaDeScreen extends StatelessWidget {
+class AcercaDeScreen extends StatefulWidget {
   const AcercaDeScreen({super.key});
+
+  @override
+  State<AcercaDeScreen> createState() => _AcercaDeScreenState();
+}
+
+class _AcercaDeScreenState extends State<AcercaDeScreen> {
+ 
 
   final List<Map<String, String>> contactos = const [
     {
@@ -23,6 +31,9 @@ class AcercaDeScreen extends StatelessWidget {
       'correo': 'correo3@laboratoriodigital.net',
     },
   ];
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +67,6 @@ class AcercaDeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Row(
                           children: const [
                             Icon(Icons.contacts, color: AppColors.titulo2, size: 20),
@@ -64,16 +74,13 @@ class AcercaDeScreen extends StatelessWidget {
                             Text('Contacto', style: AppTextStyles.titulo2),
                           ],
                         ),
-
                         const Divider(
                           color: AppColors.titulo2,
                           thickness: 1,
                           indent: 5,
                           endIndent: 5,
                         ),
-
                         const SizedBox(height: 10),
-
                         ...contactos.map((c) => Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Row(
@@ -104,7 +111,6 @@ class AcercaDeScreen extends StatelessWidget {
                             ],
                           ),
                         )),
-
                       ],
                     ),
                   ),
@@ -123,7 +129,6 @@ class AcercaDeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Row(
                           children: const [
                             Icon(Icons.location_on, color: AppColors.titulo2, size: 20),
@@ -131,17 +136,13 @@ class AcercaDeScreen extends StatelessWidget {
                             Text('Dirección', style: AppTextStyles.titulo2),
                           ],
                         ),
-
                         const Divider(
                           color: AppColors.titulo2,
                           thickness: 1,
                           indent: 5,
                           endIndent: 5,
                         ),
-
                         const SizedBox(height: 10),
-
-                        // 🔹 NOMBRE HOSPITAL
                         const Center(
                           child: Text(
                             'Hospital Infantil de las Californias',
@@ -149,29 +150,22 @@ class AcercaDeScreen extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ),
-
                         const SizedBox(height: 8),
-
                         const Text(
                           'Avenida Alejandro von Humboldt 11431 y Garita de Otay, 22430 Tijuana, Baja California, México',
                           style: AppTextStyles.titulo3,
                           textAlign: TextAlign.center,
                         ),
-
                         const SizedBox(height: 16),
-
                         const Divider(),
-
                         const SizedBox(height: 8),
-
-                        const Center(
+                        Center(
                           child: Text(
-                            '© 2026 Hospital Infantil.',
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            '© 2026 Hospital Infantil. v0.4',
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
                             textAlign: TextAlign.center,
                           ),
                         ),
-
                       ],
                     ),
                   ),

@@ -211,26 +211,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
 
-const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-// 🔹 ACERCA DE
-Card(
-  elevation: 5,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15),
-  ),
-  child: ListTile(
-    leading: const Icon(Icons.info_outline, color: AppColors.titulo2),
-    title: const Text('Acerca de', style: AppTextStyles.titulo3),
-    trailing: const Icon(Icons.chevron_right, color: AppColors.titulo2),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const AcercaDeScreen()),
-      );
-    },
-  ),
-),
+                // 🔹 ACERCA DE
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    leading: const Icon(Icons.info_outline, color: AppColors.titulo2),
+                    title: const Text('Acerca de', style: AppTextStyles.titulo3),
+                    trailing: const Icon(Icons.chevron_right, color: AppColors.titulo2),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AcercaDeScreen()),
+                      );
+                    },
+                  ),
+                ),
 
 
 

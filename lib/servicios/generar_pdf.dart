@@ -4,6 +4,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
+import 'package:universal_html/html.dart' as html;
 
 
 const List<String> tiposComida = ['Desayuno', 'Comida', 'Cena'];
@@ -342,4 +344,26 @@ Future<void> imprimirPDF({
   await Printing.layoutPdf(
     onLayout: (_) async => bytes,
   );
+}
+
+Future<void> verPDF({
+  required DateTime fechaInicio,
+  required DateTime fechaFin,
+}) async {
+  final bytes = await construirPDF(
+    fechaInicio: fechaInicio,
+    fechaFin: fechaFin,
+  );
+
+  if (kIsWeb) {
+    await Printing.sharePdf(
+      bytes: bytes,
+      filename:
+          'reporte_nutricional_${_fechaClave(fechaInicio)}_${_fechaClave(fechaFin)}.pdf',
+    );
+  } else {
+    await Printing.layoutPdf(
+      onLayout: (_) async => bytes,
+    );
+  }
 }
