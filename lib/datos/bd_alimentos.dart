@@ -410,7 +410,7 @@ final alimentos = [
   Alimento(
     nombre: "Crema de almendras",
     categoria: "Grasas con proteína",
-    imagen: "assets/bd_alimentos/alimentos/grasas_proteina/crema_de-almendras.png",
+    imagen: "assets/bd_alimentos/alimentos/grasas_proteina/crema_de_almendras.png",
   ),
   Alimento(
     nombre: "Crema de cacahuate",
