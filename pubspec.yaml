@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-
+  url_launcher: ^6.2.6
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   isolate: ^2.1.1   # o usa compute de flutter
