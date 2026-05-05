@@ -28,22 +28,22 @@ class TarjetaPlatoBebida extends StatelessWidget {
     required Offset posicion,
     required double tamanoPlato,
     required double tamanoItem,
-  }) estaFueraDelPlato;
+  })
+  estaFueraDelPlato;
 
   final bool Function({
     required Offset posicion,
     required double anchoZona,
     required double altoZona,
     required double tamanoItem,
-  }) estaFueraDeZonaBebida;
+  })
+  estaFueraDeZonaBebida;
 
-  final Offset Function({
-    required Offset posicionLocal,
-    required double tamano,
-  }) obtenerPosicionRelativaLibre;
+  final Offset Function({required Offset posicionLocal, required double tamano})
+  obtenerPosicionRelativaLibre;
 
   final void Function(Alimento alimento, {Offset? posicionInicial})
-      agregarAlimento;
+  agregarAlimento;
 
   final void Function(int indiceReal) iniciarArrastreAlimento;
 
@@ -51,10 +51,11 @@ class TarjetaPlatoBebida extends StatelessWidget {
     required int indice,
     required DragUpdateDetails detalles,
     required double tamanoPlato,
-  }) actualizarPosicionItemPlatilloLibre;
+  })
+  actualizarPosicionItemPlatilloLibre;
 
   final void Function(int indiceReal, bool debeEliminarse)
-      finalizarArrastreAlimento;
+  finalizarArrastreAlimento;
 
   final VoidCallback cancelarArrastreAlimento;
 
@@ -66,14 +67,15 @@ class TarjetaPlatoBebida extends StatelessWidget {
     required double anchoZona,
     required double altoZona,
     required double tamanoItem,
-  }) actualizarPosicionBebida;
+  })
+  actualizarPosicionBebida;
 
   final void Function(bool debeEliminarse) finalizarArrastreBebida;
 
   final VoidCallback cancelarArrastreBebida;
 
   final Widget Function(Alimento alimento, bool esTablet)
-      construirAlimentoEnPlato;
+  construirAlimentoEnPlato;
 
   final Widget Function(Alimento alimento, bool esTablet) construirVisualBebida;
 
@@ -126,7 +128,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
             : tamanoPlato;
 
         final double tamanoItemPlato = math.min(
-          esTablet ? 150.0 : 110.0,
+          esTablet ? 180.0 : 120.0,
           tamanoPlatoSeguro * 0.29,
         );
 
@@ -180,7 +182,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
 
         final double tamanoItemBebida = math.min(
           esTablet ? 148.0 : 114.0,
-          tamanoZonaBebida * 0.92,
+          math.min(tamanoZonaBebida * 0.92, tamanoItemPlato * 1.18),
         );
 
         return SizedBox.expand(
@@ -249,10 +251,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
           tamano: tamanoPlatoSeguro,
         );
 
-        agregarAlimento(
-          details.data,
-          posicionInicial: posicionRelativa,
-        );
+        agregarAlimento(details.data, posicionInicial: posicionRelativa);
       },
       builder: (context, candidateData, rejectedData) {
         final estaEncima = candidateData.isNotEmpty;
@@ -266,9 +265,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
               Positioned.fill(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(28),
-                  child: Container(
-                    color: colorTemaOscuro.withOpacity(0.28),
-                  ),
+                  child: Container(color: colorTemaOscuro.withOpacity(0.28)),
                 ),
               ),
 
@@ -282,8 +279,8 @@ class TarjetaPlatoBebida extends StatelessWidget {
                   color: seArrastraFueraDelPlato
                       ? colorTemaOscuro
                       : estaEncima
-                          ? Colors.green
-                          : Colors.grey.shade400,
+                      ? Colors.green
+                      : Colors.grey.shade400,
                   width: seArrastraFueraDelPlato || estaEncima ? 3 : 2,
                 ),
               ),
@@ -301,8 +298,8 @@ class TarjetaPlatoBebida extends StatelessWidget {
                   color: seArrastraFueraDelPlato
                       ? colorTema
                       : estaEncima
-                          ? Colors.green.shade200
-                          : Colors.grey.shade300,
+                      ? Colors.green.shade200
+                      : Colors.grey.shade300,
                   width: 1.5,
                 ),
               ),
@@ -355,11 +352,11 @@ class TarjetaPlatoBebida extends StatelessWidget {
 
                 final izquierda =
                     (tamanoPlatoSeguro * item.posicion.dx) -
-                        (tamanoItemPlato / 2);
+                    (tamanoItemPlato / 2);
 
                 final arriba =
                     (tamanoPlatoSeguro * item.posicion.dy) -
-                        (tamanoItemPlato / 2);
+                    (tamanoItemPlato / 2);
 
                 return Positioned(
                   left: izquierda,
@@ -393,16 +390,10 @@ class TarjetaPlatoBebida extends StatelessWidget {
                         tamanoItem: tamanoItemPlato,
                       );
 
-                      finalizarArrastreAlimento(
-                        indiceReal,
-                        debeEliminarse,
-                      );
+                      finalizarArrastreAlimento(indiceReal, debeEliminarse);
                     },
                     onPanCancel: cancelarArrastreAlimento,
-                    child: construirAlimentoEnPlato(
-                      item.alimento,
-                      esTablet,
-                    ),
+                    child: construirAlimentoEnPlato(item.alimento, esTablet),
                   ),
                 );
               }),
@@ -425,10 +416,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
         return true;
       },
       onAcceptWithDetails: (details) {
-        agregarAlimento(
-          details.data,
-          posicionInicial: const Offset(0.5, 0.5),
-        );
+        agregarAlimento(details.data, posicionInicial: const Offset(0.5, 0.5));
       },
       builder: (context, candidateData, rejectedData) {
         final estaEncima = candidateData.isNotEmpty;
@@ -441,9 +429,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
               Positioned.fill(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
-                  child: Container(
-                    color: colorTemaOscuro.withOpacity(0.30),
-                  ),
+                  child: Container(color: colorTemaOscuro.withOpacity(0.30)),
                 ),
               ),
 
@@ -459,8 +445,8 @@ class TarjetaPlatoBebida extends StatelessWidget {
                   color: seArrastraBebidaFuera
                       ? colorTemaOscuro
                       : estaEncima
-                          ? Colors.green
-                          : Colors.transparent,
+                      ? Colors.green
+                      : Colors.transparent,
                   width: seArrastraBebidaFuera || estaEncima ? 2 : 0,
                 ),
               ),
@@ -506,9 +492,11 @@ class TarjetaPlatoBebida extends StatelessWidget {
               )
             else
               Positioned(
-                left: (anchoZona * itemBebida!.posicion.dx) -
+                left:
+                    (anchoZona * itemBebida!.posicion.dx) -
                     (tamanoItemBebida / 2),
-                top: (altoZona * itemBebida!.posicion.dy) -
+                top:
+                    (altoZona * itemBebida!.posicion.dy) -
                     (tamanoItemBebida / 2),
                 width: tamanoItemBebida,
                 height: tamanoItemBebida,
@@ -537,10 +525,7 @@ class TarjetaPlatoBebida extends StatelessWidget {
                     finalizarArrastreBebida(debeEliminarse);
                   },
                   onPanCancel: cancelarArrastreBebida,
-                  child: construirVisualBebida(
-                    itemBebida!.alimento,
-                    esTablet,
-                  ),
+                  child: construirVisualBebida(itemBebida!.alimento, esTablet),
                 ),
               ),
           ],

@@ -14,6 +14,7 @@ import 'package:app_pvvc/modelos/categoria.dart';
 import 'package:app_pvvc/datos/bd_alimentos.dart';
 import 'package:app_pvvc/theme/app_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class ComidaScreen extends StatefulWidget {
   const ComidaScreen({super.key});
@@ -535,7 +536,9 @@ class _ComidaScreenState extends State<ComidaScreen> {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: seleccionado ? color.withOpacity(0.18) : AppColors.g4.withOpacity(0.5),
+                  color: seleccionado
+                      ? color.withOpacity(0.18)
+                      : AppColors.g4.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: seleccionado ? color : Colors.grey.shade300,
@@ -583,13 +586,20 @@ class _ComidaScreenState extends State<ComidaScreen> {
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, constraints) {
-                              final bool esWebOEscritorio =
-                                  MediaQuery.of(context).size.width >= 700;
+                              final plataforma = defaultTargetPlatform;
 
-                              if (!esWebOEscritorio &&
-                                  constraints.maxHeight < 430 &&
-                                  constraints.maxWidth >
-                                      constraints.maxHeight) {
+                              final bool esWebEnEscritorio =
+                                  kIsWeb &&
+                                  (plataforma == TargetPlatform.windows ||
+                                      plataforma == TargetPlatform.macOS ||
+                                      plataforma == TargetPlatform.linux);
+
+                              final bool ventanaDeEscritorioMuyPequena =
+                                  constraints.maxWidth < 300 ||
+                                  constraints.maxHeight < 300;
+
+                              if (esWebEnEscritorio &&
+                                  ventanaDeEscritorioMuyPequena) {
                                 return Center(
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
@@ -619,7 +629,7 @@ class _ComidaScreenState extends State<ComidaScreen> {
 
                               final double tamanoZonaBebida = pantallaHorizontal
                                   ? math.min(altoDisponible * 0.85, 260.0)
-                                  : math.max(140.0, altoDisponible * 0.23);
+                                  : math.max(120.0, altoDisponible * 0.20);
 
                               final double espacioEntrePlatoYBebida =
                                   pantallaHorizontal ? 0.0 : 6.0;
@@ -643,7 +653,7 @@ class _ComidaScreenState extends State<ComidaScreen> {
                                     anchoDisponibleParaPlato,
                                     altoDisponibleParaPlato,
                                   )
-                                  .clamp(210.0, esTablet ? 560.0 : 430.0);
+                                  .clamp(230.0, esTablet ? 600.0 : 480.0);
                               return TarjetaPlatoBebida(
                                 tamanoPlato: tamanoPlato,
                                 tamanoZonaBebida: tamanoZonaBebida,
