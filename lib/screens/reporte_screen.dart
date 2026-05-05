@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_pvvc/utils/styles.dart';
 import 'package:app_pvvc/theme/app_colors.dart';
 import 'package:app_pvvc/servicios/generar_pdf.dart';
+import 'package:flutter/foundation.dart';
 
 class ReporteScreen extends StatefulWidget {
   const ReporteScreen({super.key});
@@ -130,6 +131,7 @@ class _ReporteScreenState extends State<ReporteScreen> {
 
                         const SizedBox(height: 25),
 
+if (!kIsWeb) ...[
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -193,7 +195,9 @@ class _ReporteScreenState extends State<ReporteScreen> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 12),
+],
 
                         SizedBox(
                           width: double.infinity,
@@ -226,7 +230,7 @@ class _ReporteScreenState extends State<ReporteScreen> {
                                 return;
                               }
 
-                              await imprimirPDF(
+                              await verPDF(
                                 fechaInicio: fechaInicio!,
                                 fechaFin: fechaFin!,
                               );
@@ -235,10 +239,10 @@ class _ReporteScreenState extends State<ReporteScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
-                                Icon(Icons.print, size: 20),
+                                Icon(Icons.save, size: 20),
                                 SizedBox(width: 8),
                                 Text(
-                                  'Imprimir/Guardar PDF',
+                                  kIsWeb ? 'Descargar y Compartir PDF' : 'Descargar PDF',
                                   style: AppTextStyles.boton,
                                 ),
                               ],
