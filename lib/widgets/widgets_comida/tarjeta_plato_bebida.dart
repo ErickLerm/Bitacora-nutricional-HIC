@@ -181,8 +181,11 @@ class TarjetaPlatoBebida extends StatelessWidget {
             : math.min(anchoDisponible * 0.92, 360.0);
 
         final double tamanoItemBebida = math.min(
-          esTablet ? 148.0 : 114.0,
-          math.min(tamanoZonaBebida * 0.92, tamanoItemPlato * 1.18),
+          esTablet ? 148.0 : 120.0,
+          math.max(
+            tamanoItemPlato,
+            math.min(tamanoZonaBebida * 0.92, tamanoItemPlato * 1.18),
+          ),
         );
 
         return SizedBox.expand(
@@ -230,6 +233,10 @@ class TarjetaPlatoBebida extends StatelessWidget {
     required double tamanoPlatoSeguro,
     required double tamanoItemPlato,
   }) {
+    final double fontTextoPlato = math.max(
+      10.0,
+      math.min(esTablet ? 18.0 : 16.0, tamanoPlatoSeguro * 0.075),
+    );
     return DragTarget<Alimento>(
       onWillAcceptWithDetails: (details) {
         final alimento = details.data;
@@ -306,12 +313,15 @@ class TarjetaPlatoBebida extends StatelessWidget {
             ),
 
             if (indiceItemArrastrandose != null && seArrastraFueraDelPlato)
-              const Positioned.fill(
+              Positioned.fill(
                 child: IgnorePointer(
                   child: Center(
                     child: Icon(
                       Icons.delete_forever_outlined,
-                      size: 48,
+                      size: math.min(
+                        esTablet ? 56.0 : 48.0,
+                        tamanoPlatoSeguro * 0.25,
+                      ),
                       color: Colors.white,
                     ),
                   ),
@@ -324,17 +334,22 @@ class TarjetaPlatoBebida extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.restaurant_menu,
-                    size: esTablet ? 56 : 46,
+                    size: math.min(
+                      esTablet ? 56.0 : 46.0,
+                      tamanoPlatoSeguro * 0.25,
+                    ),
                     color: Colors.grey.shade500,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: tamanoPlatoSeguro * 0.04),
                   Text(
                     estaEncima
                         ? 'Suelta aquí el alimento'
                         : 'Agrega alimentos\nal plato',
                     textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: esTablet ? 18 : 16,
+                      fontSize: fontTextoPlato,
                       fontWeight: FontWeight.w800,
                       color: Colors.grey.shade700,
                     ),
@@ -408,6 +423,10 @@ class TarjetaPlatoBebida extends StatelessWidget {
     required double altoZona,
     required double tamanoItemBebida,
   }) {
+    final double fontTextoBebida = math.max(
+      10.0,
+      math.min(esTablet ? 16.0 : 14.0, anchoZona * 0.08),
+    );
     return DragTarget<Alimento>(
       onWillAcceptWithDetails: (details) {
         final alimento = details.data;
@@ -453,12 +472,12 @@ class TarjetaPlatoBebida extends StatelessWidget {
             ),
 
             if (seArrastraBebidaFuera)
-              const Positioned.fill(
+              Positioned.fill(
                 child: IgnorePointer(
                   child: Center(
                     child: Icon(
                       Icons.delete_forever_outlined,
-                      size: 40,
+                      size: math.min(esTablet ? 52.0 : 42.0, anchoZona * 0.55),
                       color: Colors.white,
                     ),
                   ),
@@ -472,19 +491,20 @@ class TarjetaPlatoBebida extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.local_drink_outlined,
-                      size: esTablet ? 52 : 42,
+                      size: math.min(esTablet ? 52.0 : 42.0, anchoZona * 0.25),
                       color: colorTemaOscuro,
                     ),
                     const SizedBox(width: 10),
                     Flexible(
                       child: Text(
                         'Agua / bebida',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.grey.shade700,
                           fontWeight: FontWeight.w700,
-                          fontSize: esTablet ? 16 : 14,
+                          fontSize: fontTextoBebida,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

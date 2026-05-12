@@ -487,23 +487,39 @@ class _ComidaScreenState extends State<ComidaScreen> {
     return mes[0].toUpperCase() + mes.substring(1);
   }
 
-  Widget _buildControlesPorFecha() {
+  Widget _buildControlesPorFecha({required bool compacto}) {
+    final double fontFecha = compacto ? 11.0 : 14.0;
+    final double fontBoton = compacto ? 11.0 : 14.0;
+    final double paddingXBoton = compacto ? 8.0 : 18.0;
+    final double paddingYBoton = compacto ? 6.0 : 10.0;
+    final double espacioWrap = compacto ? 6.0 : 10.0;
+    final double iconSize = compacto ? 16.0 : 22.0;
+    final double spacerunning = compacto ? 4.0 : 8.0;
+
     return Column(
       children: [
         Center(
           child: TextButton.icon(
             onPressed: _seleccionarFecha,
-            icon: const Icon(Icons.calendar_month_rounded, size: 20),
+            icon: Icon(Icons.calendar_month_rounded, size: iconSize),
             label: Text(
               _esHoy(fechaSeleccionada)
                   ? 'Hoy: ${_nombreDia(fechaSeleccionada)} ${fechaSeleccionada.day} ${_mesCorto(fechaSeleccionada)}'
                   : '${_nombreDia(fechaSeleccionada)} ${fechaSeleccionada.day} ${_mesCorto(fechaSeleccionada)}',
-              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: fontFecha,
+              ),
             ),
             style: TextButton.styleFrom(
               foregroundColor: Colors.black87,
               backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: paddingXBoton,
+                vertical: paddingYBoton,
+              ),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              minimumSize: const Size(0, 36),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
                 side: BorderSide(color: Colors.grey.shade300),
@@ -512,12 +528,12 @@ class _ComidaScreenState extends State<ComidaScreen> {
           ),
         ),
 
-        const SizedBox(height: 6),
+        SizedBox(height: espacioWrap),
 
         Wrap(
           alignment: WrapAlignment.center,
-          spacing: 10,
-          runSpacing: 8,
+          spacing: espacioWrap,
+          runSpacing: spacerunning,
           children: tiposComida.map((tipoComida) {
             final estado = _estadoComida(tipoComida);
             final seleccionado = tipoComidaSeleccionado == tipoComida;
@@ -531,9 +547,9 @@ class _ComidaScreenState extends State<ComidaScreen> {
             return GestureDetector(
               onTap: () => _cambiarTipoComida(tipoComida),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 10,
+                padding: EdgeInsets.symmetric(
+                  horizontal: paddingXBoton,
+                  vertical: paddingYBoton,
                 ),
                 decoration: BoxDecoration(
                   color: seleccionado
@@ -547,9 +563,9 @@ class _ComidaScreenState extends State<ComidaScreen> {
                 ),
                 child: Text(
                   tipoComida,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontSize: 14,
+                    fontSize: fontBoton,
                   ),
                 ),
               ),
@@ -564,8 +580,15 @@ class _ComidaScreenState extends State<ComidaScreen> {
   Widget build(BuildContext context) {
     final tamanoPantalla = MediaQuery.of(context).size;
     final bool esTablet = tamanoPantalla.width >= 700;
-    final double anchoPanel = esTablet ? 390.0 : tamanoPantalla.width * 0.82;
-
+    final double anchoPanel = esTablet ? 450.0 : tamanoPantalla.width * 0.82;
+    final bool celularCompacto =
+        tamanoPantalla.shortestSide < 390 || tamanoPantalla.height < 700;
+    final double paddingHorizontalPantalla = celularCompacto ? 4.0 : 10.0;
+    final double paddingVerticalPantalla = celularCompacto ? 4.0 : 12.0;
+    final double espacioControlesPlato = celularCompacto ? 4.0 : 8.0;
+    final double espacioPlatoAcciones = celularCompacto ? 3.0 : 8.0;
+    print('WIDTH: ${tamanoPantalla.width}');
+    print('HEIGHT: ${tamanoPantalla.height}');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -575,14 +598,19 @@ class _ComidaScreenState extends State<ComidaScreen> {
               onTap: _cerrarPanel,
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                padding: EdgeInsets.fromLTRB(
+                  paddingHorizontalPantalla,
+                  paddingVerticalPantalla,
+                  paddingHorizontalPantalla,
+                  paddingVerticalPantalla,
+                ),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 960),
+                    constraints: const BoxConstraints(maxWidth: 1200),
                     child: Column(
                       children: [
-                        _buildControlesPorFecha(),
-                        const SizedBox(height: 8),
+                        _buildControlesPorFecha(compacto: celularCompacto),
+                        SizedBox(height: espacioControlesPlato),
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, constraints) {
@@ -594,30 +622,6 @@ class _ComidaScreenState extends State<ComidaScreen> {
                                       plataforma == TargetPlatform.macOS ||
                                       plataforma == TargetPlatform.linux);
 
-                              final bool ventanaDeEscritorioMuyPequena =
-                                  constraints.maxWidth < 300 ||
-                                  constraints.maxHeight < 300;
-
-                              if (esWebEnEscritorio &&
-                                  ventanaDeEscritorioMuyPequena) {
-                                return Center(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 22,
-                                      vertical: 18,
-                                    ),
-
-                                    child: const Text(
-                                      'Ajusta tu pantalla',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
                               final double anchoMaximoTarjeta =
                                   constraints.maxWidth;
                               final double altoDisponible =
@@ -629,10 +633,12 @@ class _ComidaScreenState extends State<ComidaScreen> {
 
                               final double tamanoZonaBebida = pantallaHorizontal
                                   ? math.min(altoDisponible * 0.85, 260.0)
-                                  : math.max(120.0, altoDisponible * 0.20);
+                                  : altoDisponible *
+                                        (celularCompacto ? 0.24 : 0.20);
 
                               final double espacioEntrePlatoYBebida =
                                   pantallaHorizontal ? 0.0 : 6.0;
+
                               final double margenSeguridad = 8.0;
 
                               final double altoDisponibleParaPlato =
@@ -648,12 +654,51 @@ class _ComidaScreenState extends State<ComidaScreen> {
                                   ? anchoMaximoTarjeta * 0.62
                                   : anchoMaximoTarjeta * 0.94;
 
-                              final double tamanoPlato = math
-                                  .min(
-                                    anchoDisponibleParaPlato,
-                                    altoDisponibleParaPlato,
-                                  )
-                                  .clamp(230.0, esTablet ? 600.0 : 480.0);
+                              final double tamanoPlatoBase = math.min(
+                                anchoDisponibleParaPlato,
+                                altoDisponibleParaPlato,
+                              );
+
+                              final double tamanoMinimoPlato = celularCompacto
+                                  ? altoDisponible * 0.68
+                                  : 230.0;
+
+                              final double tamanoPlato = tamanoPlatoBase.clamp(
+                                tamanoMinimoPlato,
+                                esTablet ? 600.0 : 480.0,
+                              );
+
+                              final double altoNecesario = pantallaHorizontal
+                                  ? tamanoPlato + margenSeguridad
+                                  : tamanoPlato +
+                                        tamanoZonaBebida +
+                                        espacioEntrePlatoYBebida +
+                                        margenSeguridad;
+
+                              final bool mostrarAjustaPantalla =
+                                  esWebEnEscritorio &&
+                                  altoDisponible < altoNecesario;
+
+                              if (mostrarAjustaPantalla) {
+                                return Center(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 22,
+                                      vertical: 18,
+                                    ),
+                                    child: const Text(
+                                      'Ajusta tu pantalla',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
                               return TarjetaPlatoBebida(
                                 tamanoPlato: tamanoPlato,
                                 tamanoZonaBebida: tamanoZonaBebida,
@@ -726,8 +771,9 @@ class _ComidaScreenState extends State<ComidaScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: espacioPlatoAcciones),
                         AccionesComida(
+                          compacto: celularCompacto,
                           alAgregarAlimento: _abrirPanel,
                           alEliminarAlimento: _limpiarPlatilloActual,
                         ),
